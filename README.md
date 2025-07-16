@@ -1,6 +1,6 @@
 Software Requirements Specification (SRS)
 
-Finance Tracker & Prediction System
+RASA
 
 Version: 1.0
 
