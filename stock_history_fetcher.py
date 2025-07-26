@@ -8,7 +8,7 @@ START_DATE = "2024-07-01"
 END_DATE = datetime.datetime.today().strftime('%Y-%m-%d')
 INTERVAL = "1d"  # '1d', '1wk', or '1mo'
 
-# === Get S&P 500 companies from Wikipedia, get market data from other sites ===
+# === Get S&P 500 companies from Wikipedia, get market data from other sites === 
 def get_sp500_companies():
     url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
     url = "https://finviz.com/#"
