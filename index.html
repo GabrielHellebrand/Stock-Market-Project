@@ -204,7 +204,7 @@
       border-radius: 15px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
       position: relative;
-      height: 400px; /* Fixed height */
+      height: 400px;
     }
 
     .chart-container canvas {
@@ -406,7 +406,7 @@
         <div class="results-grid">
           <div class="chart-container">
             <h3>Price Prediction Chart</h3>
-            <canvas id="predictionChart" width="400" height="300"></canvas>
+            <canvas id="predictionChart"></canvas>
           </div>
           <div class="predictions-table">
             <table id="predictions-table-content">
@@ -439,7 +439,7 @@
       <div id="historical-results" style="display: none;">
         <div class="chart-container">
           <h3>Historical Price Movement</h3>
-          <canvas id="historicalChart" width="400" height="300"></canvas>
+          <canvas id="historicalChart"></canvas>
         </div>
       </div>
     </div>
@@ -462,7 +462,7 @@
       <div id="comparison-chart-container" style="display: none;">
         <div class="chart-container">
           <h3>Stock Price Comparison</h3>
-          <canvas id="comparisonChart" width="400" height="300"></canvas>
+          <canvas id="comparisonChart"></canvas>
         </div>
       </div>
     </div>
@@ -543,14 +543,26 @@
     async function fetchHistoricalData(ticker, period = '1y') {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      const days = period === '1y' ? 365 : period === '2y' ? 730 : 1825;
+      const periodDays = {
+        '1y': 365,
+        '2y': 730,
+        '5y': 1825,
+        'max': 3650
+      };
+      
+      const days = periodDays[period] || 365;
       const basePrice = Math.random() * 200 + 50;
       const data = [];
       
-      for (let i = 0; i < days; i += 7) {
+      for (let i = days; i >= 0; i -= 7) {
         const date = new Date();
-        date.setDate(date.getDate() - (days - i));
-        const price = basePrice * (1 + Math.sin(i / 50) * 0.3 + (Math.random() - 0.5) * 0.1);
+        date.setDate(date.getDate() - i);
+        
+        const timeProgress = (days - i) / days;
+        const trend = Math.sin(timeProgress * Math.PI * 4) * 0.3;
+        const noise = (Math.random() - 0.5) * 0.2;
+        const price = basePrice * (1 + trend + noise);
+        
         data.push({
           date: date.toISOString().split('T')[0],
           price: Math.max(price, 10)
@@ -559,7 +571,7 @@
       
       return {
         ticker: ticker.toUpperCase(),
-        history: data
+        history: data.sort((a, b) => new Date(a.date) - new Date(b.date))
       };
     }
 
@@ -679,10 +691,19 @@
         return;
       }
 
+      if (!/^[A-Z]{1,5}$/.test(ticker)) {
+        showError(errorEl, 'Please enter a valid ticker symbol (1-5 letters)');
+        return;
+      }
+
       hideError(errorEl);
 
       try {
         const data = await fetchHistoricalData(ticker, period);
+        
+        if (!data.history || data.history.length === 0) {
+          throw new Error('No historical data available');
+        }
         
         updateChart('historicalChart', {
           labels: data.history.map(h => h.date),
@@ -693,14 +714,39 @@
             backgroundColor: 'rgba(0, 200, 81, 0.1)',
             borderWidth: 2,
             fill: true,
-            tension: 0.1
+            tension: 0.1,
+            pointRadius: 0,
+            pointHoverRadius: 5
           }]
         }, {
           scales: {
             x: {
-              type: 'time',
-              time: {
-                unit: 'month'
+              title: {
+                display: true,
+                text: "Date",
+                font: { size: 12, weight: '600' },
+                color: '#2c3e50'
+              },
+              grid: { color: 'rgba(0, 0, 0, 0.1)' },
+              ticks: { 
+                color: '#7f8c8d',
+                maxTicksLimit: 10
+              }
+            },
+            y: {
+              beginAtZero: false,
+              title: {
+                display: true,
+                text: "Price (USD)",
+                font: { size: 12, weight: '600' },
+                color: '#2c3e50'
+              },
+              grid: { color: 'rgba(0, 0, 0, 0.1)' },
+              ticks: {
+                callback: function(value) {
+                  return '$' + value.toFixed(2);
+                },
+                color: '#7f8c8d'
               }
             }
           }
@@ -708,7 +754,8 @@
 
         resultsEl.style.display = 'block';
       } catch (error) {
-        showError(errorEl, 'Error fetching historical data');
+        console.error('Historical data error:', error);
+        showError(errorEl, 'Error fetching historical data: ' + error.message);
       }
     }
 
@@ -853,16 +900,16 @@
       summaryEl.style.display = 'block';
       statsEl.innerHTML = `
         <div class="stat-item">
-          <div class="stat-value">$${totalValue.toFixed(2)}</div>
+          <div class="stat-value">${totalValue.toFixed(2)}</div>
           <div class="stat-label">Current Value</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value">$${totalCost.toFixed(2)}</div>
+          <div class="stat-value">${totalCost.toFixed(2)}</div>
           <div class="stat-label">Total Cost</div>
         </div>
         <div class="stat-item">
           <div class="stat-value ${totalGainLoss >= 0 ? 'price-up' : 'price-down'}">
-            ${totalGainLoss >= 0 ? '+' : ''}$${totalGainLoss.toFixed(2)}
+            ${totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toFixed(2)}
           </div>
           <div class="stat-label">Total P&L</div>
         </div>
@@ -980,9 +1027,7 @@
         btnText.innerHTML = '<div class="loading"></div>';
       } else {
         button.disabled = false;
-        btnText.textContent = btnText.textContent.includes('Predict') ? 'Predict Price' : 
-                              btnText.textContent.includes('Analyze') ? 'Analyze History' :
-                              btnText.textContent.includes('Add') ? 'Add Stock' : 'Submit';
+        btnText.textContent = 'Predict Price';
       }
     }
 
@@ -1007,7 +1052,7 @@
           const value = this.value.toUpperCase();
           if (value.length >= 1) {
             const matches = popularStocks.filter(stock => stock.startsWith(value));
-            // You could implement a dropdown here for suggestions
+            // Placeholder for autocomplete dropdown implementation
           }
         });
       });
@@ -1132,11 +1177,13 @@
     // Add export button to portfolio tab
     document.addEventListener('DOMContentLoaded', function() {
       const portfolioInputSection = document.querySelector('#portfolio-tab .input-section .input-group');
-      const exportBtn = document.createElement('button');
-      exportBtn.textContent = 'Export CSV';
-      exportBtn.onclick = exportPortfolioData;
-      exportBtn.style.background = '#17a2b8';
-      portfolioInputSection.appendChild(exportBtn);
+      if (portfolioInputSection) {
+        const exportBtn = document.createElement('button');
+        exportBtn.textContent = 'Export CSV';
+        exportBtn.onclick = exportPortfolioData;
+        exportBtn.style.background = '#17a2b8';
+        portfolioInputSection.appendChild(exportBtn);
+      }
     });
 
     // Initialize everything
@@ -1154,7 +1201,9 @@
 
     // Service worker for offline functionality (basic)
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(console.error);
+      navigator.serviceWorker.register('/sw.js').catch(function(error) {
+        console.log('Service Worker registration failed:', error);
+      });
     }
   </script>
 </body>
