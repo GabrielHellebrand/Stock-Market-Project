@@ -299,28 +299,28 @@
 
     // Mock API function - replace with actual backend call
     async function fetchStockPrediction(ticker) {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock data generation
-      const basePrice = Math.random() * 200 + 50;
-      const volatility = 0.1;
-      
-      const predictions = [
-        { label: "Current", price: basePrice, days: 0 },
-        { label: "1 Day", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 0.3), days: 1 },
-        { label: "1 Week", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 0.8), days: 7 },
-        { label: "1 Month", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 1.5), days: 30 },
-        { label: "3 Months", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 2), days: 90 },
-        { label: "1 Year", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 3), days: 365 }
-      ];
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  
+  try {
+    const response = await fetch(`http://localhost:8000/predict/${ticker}`, {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
 
-      return {
-        ticker: ticker.toUpperCase(),
-        currentPrice: basePrice,
-        predictions: predictions
-      };
-    }
+    if (!response.ok) throw new Error("Invalid ticker or server error");
+    
+    const data = await response.json();
+    
+    return {
+      ticker: data.ticker,
+      currentPrice: data.today,
+      predictions: data.predictions // Make sure your backend returns this format
+    };
+  } catch (error) {
+    throw new Error(`Failed to fetch prediction: ${error.message}`);
+  }
+}
 
     async function predictStock() {
       if (isLoading) return;
