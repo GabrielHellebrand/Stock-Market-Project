@@ -1,151 +1,108 @@
-// 5 years, 1 year, 6 months, 1 month, 1 week, 1 day, data for the Fortune 500 companies
- const stockData = {
-      WMT: [43.13, 69.62, 97.50, 97.78, 96.00, 98.00],
-      AMZN: [158.23, 183.20, 237.07, 219.39, 228.61, 234.18],
-      UNH: [302.78, 566.75, 538.10, 311.97, 287.30, 265.59],
-      AAPL: [106.26, 218.24, 239.36, 205.17, 214.98, 214.20],
-      CVS: [62.94, 61.57, 56.90, 68.98, 61.45, 59.80],
-      BRKB: [195.78, 438.31, 469.26, 485.77, 480.69, 482.00],
-      GOOG: [74.15, 171.13, 197.18, 177.39, 192.35, 193.65],
-      XOM: [42.08, 116.10, 108.67, 107.80, 108.93, 112.00],
-      MCK: [150.16, 606.71, 603.18, 732.78, 710.13, 710.26],
-      COR: [100.19, 227.18, 255.94, 299.85, 293.81, 285.49],
-      JPM: [96.64, 210.85, 266.58, 289.91, 293.13, 299.79],
-      COST: [325.53, 815.56, 964.02, 989.04, 941.00, 933.95],
-      CI: [172.69, 346.54, 303.31, 330.58, 301.19, 288.49],
-      MSFT: [205.01, 426.73, 442.33, 497.41, 506.15, 515.23],
-      CAH: [54.62, 98.18, 127.76, 168.00, 157.48, 156.84],
-      CVX: [83.94, 156.60, 155.69, 143.19, 150.96, 156.60],
-      BAC: [24.88, 41.09, 46.75, 47.32, 48.04, 48.39],
-      GM: [24.89, 44.15, 49.78, 49.21, 49.74, 53.75],
-      F: [6.61, 11.01, 10.21, 10.85, 11.28, 11.29],
-      ELV: [273.80, 529.86, 400.30, 388.96, 283.00, 284.00],
-      C: [50.01, 64.30, 80.63, 85.12, 94.48, 96.00],
-      META: [253.67, 465.71, 676.49, 738.09, 707.32, 719.85],
-      CNC: [65.25, 73.48, 63.91, 54.28, 28.09, 26.32],
-      HD: [265.49, 361.67, 413.42, 366.64, 372.13, 377.00],
-      FNMA: [1.97, 1.32, 5.66, 9.54, 7.77, 7.59],
-      WBA: [40.71, 11.94, 11.25, 11.48, 11.54, 11.63],
-      KR: [34.79, 54.20, 61.06, 71.73, 72.41, 69.60],
-      PSX: [62.02, 140.41, 122.16, 119.30, 126.60, 127.36],
-      MPC: [38.20, 171.96, 151.39, 166.11, 175.58, 175.02],
-      VZ: [57.48, 40.03, 40.28, 43.27, 42.63, 42.42],
-      NVDA: [10.61, 111.59, 123.70, 157.99, 169.84, 177.94],
-      GS: [197.96, 492.72, 637.38, 707.75, 702.00, 724.50],
-      WFC: [24.26, 59.59, 78.37, 80.12, 82.96, 83.62],
-      VLO: [56.23, 157.45, 139.48, 134.42, 147.45, 145.16],
-      CMCSA: [42.80, 40.68, 37.36, 35.69, 35.42, 33.45],
-      T: [22.32, 18.90, 24.23, 28.94, 26.03, 27.60],
-      FMCC: [1.98, 1.25, 5.32, 8.24, 6.32, 6.20],
-      HUM: [392.45, 392.12, 294.23, 244.48, 235.44, 230.00],
-      MS: [48.88, 102.48, 138.71, 140.86, 140.50, 143.50],
-      TGT: [125.88, 146.82, 140.09, 98.65, 107.44, 106.30],
-      SNEX: [23.32, 54.39, 72.89, 91.14, 95.20, 95.18],
-      TSLA: [95.38, 232.10, 389.10, 317.66, 330.71, 326.00],
-      DELL: [30.27, 111.20, 103.10, 122.60, 125.55, 135.00],
-      PEP: [137.66, 173.21, 150.37, 132.04, 145.99, 141.57],
-      DIS: [116.94, 92.14, 113.19, 124.01, 121.98, 120.65],
-      UPS: [142.76, 128.61, 133.78, 100.94, 101.72, 98.00],
-      JNJ: [145.76, 158.56, 151.15, 152.75, 168.96, 167.14],
-      FDX: [168.40, 299.23, 275.06, 227.31, 233.20, 240.28],
-      ADM: [42.83, 63.30, 51.66, 52.78, 55.53, 54.97],
-      PG: [131.12, 169.93, 166.23, 159.32, 158.22, 158.38],
-      LOW: [148.91, 239.80, 261.73, 221.87, 226.00, 230.33],
-      ET: [6.55, 16.02, 20.53, 18.13, 17.37, 17.90],
-      RTX: [56.68, 114.44, 125.13, 146.02, 150.15, 157.84],
-      ACI: [14.86, 19.97, 20.02, 21.51, 20.57, 19.73],
-      SYY: [52.85, 73.26, 71.92, 75.74, 80.35, 79.00],
-      PGR: [90.34, 213.63, 246.40, 266.86, 247.66, 241.33],
-      AXP: [93.32, 247.89, 315.25, 318.98, 306.99, 312.82],
-      LMT: [378.97, 527.64, 454.36, 464.14, 413.75, 422.51],
-      MET: [37.85, 75.50, 86.64, 80.42, 78.15, 78.08],
-      HCA: [126.64, 358.73, 327.62, 383.10, 352.02, 341.12],
-      PRU: [63.37, 124.34, 122.33, 107.44, 105.13, 104.84],
-      BA: [158.00, 185.43, 173.66, 209.53, 230.87, 239.50],
-      CAT: [132.88, 344.53, 393.23, 388.21, 419.74, 434.55],
-      MRK: [76.51, 127.78, 98.28, 79.16, 82.78, 79.80],
-      ALL: [94.39, 169.23, 190.81, 201.31, 198.34, 193.42],
-      PFE: [36.45, 30.72, 26.62, 24.24, 25.39, 24.28],
-      IBM: [117.43, 191.50, 228.63, 294.78, 284.44, 264.48],
-      DAL: [24.97, 43.18, 68.43, 49.18, 56.35, 55.84],
-      SNX: [62.49, 118.19, 141.30, 135.70, 144.19, 148.87],
-      UAL: [31.38, 46.76, 108.26, 79.63, 91.29, 93.00],
-      COP: [37.39, 109.12, 101.56, 89.74, 93.43, 97.58],
-      TJX: [51.99, 112.56, 124.21, 123.49, 126.00, 125.93],
-    };
+let chart;
 
-    let chart;  // Global chart variable
+async function predictStock() {
+  const ticker = document.getElementById("ticker").value.toUpperCase().trim();
+  const resultEl = document.getElementById("result");
+  const errorEl = document.getElementById("ticker-error");
+  const canvas = document.getElementById("stockChart");
 
-    function predictStock() {
-      const ticker = document.getElementById("ticker").value.toUpperCase().trim();
+  if (!ticker) {
+    errorEl.textContent = "Please enter a valid ticker.";
+    resultEl.textContent = "";
+    if (chart) chart.destroy();
+    document.getElementById("predictionTableContainer").innerHTML = "";
+    return;
+  }
 
-      if (!ticker) {
-        document.getElementById("result").innerText = "Please enter a valid ticker.";
-        return;
-      }
+  if (!canvas || !canvas.getContext) {
+    errorEl.textContent = "Chart initialization failed.";
+    resultEl.textContent = "";
+    return;
+  }
 
-      let basePrice;
+  errorEl.textContent = "";
+  resultEl.textContent = "Loading...";
 
-      if (stockData[ticker]) {
-        const prices = stockData[ticker];
-        basePrice = (
-          (prices[3] * 0.2) + 
-          (prices[4] * 0.3) + 
-          (prices[5] * 0.5)
-        ).toFixed(2);
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    const response = await fetch(`http://localhost:8000/predict/${ticker}`, {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
 
-        document.getElementById("result").innerText =
-          `Predicted price for ${ticker}: $${basePrice}`;
-      } else {
-        basePrice = (Math.random() * 1000 + 50).toFixed(2);
-        document.getElementById("result").innerText =
-          `Predicted price for ${ticker} (mock): $${basePrice}`;
-      }
+    if (!response.ok) throw new Error("Invalid ticker or server error");
 
-      // Generate future price projections based on assumed growth
-      const base = parseFloat(basePrice);
-      const futurePrices = [
-        base * 1.01,   // 1 day later: +1%
-        base * 1.03,   // 1 week later: +3%
-        base * 1.10,   // 1 month later: +10%
-        base * 1.30,   // 6 months later: +30%
-        base * 1.60,   // 1 year later: +60%
-        base * 2.50    // 5 years later: +150%
-      ].map(price => price.toFixed(2));
-
-      const labels = ["1 Day", "1 Week", "1 Month", "6 Months", "1 Year", "5 Years"];
-
-      // Update Chart
-      updateChart(ticker, labels, futurePrices);
+    const data = await response.json();
+    if (!data.today || !Array.isArray(data.all)) {
+      throw new Error("Invalid response format from server");
     }
 
-    function updateChart(ticker, labels, data) {
-      const ctx = document.getElementById('stockChart').getContext('2d');
+    const { today, all } = data;
+    resultEl.textContent = `Current price for ${ticker}: $${today.toFixed(2)}`;
 
-      if (chart) {
-        chart.destroy(); // Destroy previous chart
-      }
+    const labels = all.map(item => item.label);
+    const prices = all.map(item => item.price);
 
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: `Projected Prices for ${ticker}`,
-            data: data,
-            borderColor: 'blue',
-            backgroundColor: 'rgba(0,0,255,0.1)',
-            fill: true,
-            tension: 0.3
-          }]
+    updateChart(ticker, labels, prices);
+    displayFutureTable(labels, prices); // Ensure this function exists
+  } catch (error) {
+    errorEl.textContent = `Error: ${error.message}`;
+    resultEl.textContent = "";
+    if (chart) chart.destroy();
+    document.getElementById("predictionTableContainer").innerHTML = "";
+  }
+}
+
+function updateChart(ticker, labels, data) {
+  if (chart) chart.destroy();
+
+  const ctx = document.getElementById("stockChart").getContext("2d");
+  if (!ctx) throw new Error("Canvas context not found");
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: `Projected Prices for ${ticker}`,
+        data: data,
+        borderColor: "#3498db",
+        backgroundColor: "rgba(52, 152, 219, 0.1)",
+        fill: true,
+        tension: 0.3,
+        pointBackgroundColor: "#3498db",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "#3498db"
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top'
         },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: false
-            }
+        title: {
+          display: true,
+          text: `Stock Price Projection for ${ticker}`
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          title: {
+            display: true,
+            text: "Price ($)"
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Timeframe"
           }
         }
-      });
+      }
     }
+  });
+}

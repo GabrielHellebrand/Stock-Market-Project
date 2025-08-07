@@ -1,26 +1,583 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RASA LLC</title>
-   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="./styles/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RASA LLC - Stock Price Prediction</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: #7f8c8d;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .input-section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+
+    input {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    button {
+      padding: 0.875rem 2rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error {
+      color: #e74c3c;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(231, 76, 60, 0.1);
+      border-radius: 8px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-section {
+      display: none;
+      margin: 2rem 0;
+    }
+
+    .result-section.show {
+      display: block;
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .current-price {
+      background: linear-gradient(135deg, #00c851, #00a843);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 15px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 25px rgba(0, 200, 81, 0.3);
+    }
+
+    .chart-container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin: 2rem 0;
+    }
+
+    .predictions-table {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin-top: 2rem;
+    }
+
+    .predictions-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .predictions-table th {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .predictions-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e9ecef;
+      transition: background-color 0.2s ease;
+    }
+
+    .predictions-table tr:hover td {
+      background-color: #f8f9fa;
+    }
+
+    .predictions-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .price-change {
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+
+    .price-up {
+      background: rgba(0, 200, 81, 0.1);
+      color: #00c851;
+    }
+
+    .price-down {
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+        margin: 0.5rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .input-group {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      input, button {
+        width: 100%;
+      }
+
+      .predictions-table {
+        overflow-x: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
+  <main class="container">
     <h1>📈 RASA LLC</h1>
-    <p>Enter a stock ticker symbol below to get a price prediction.</p>
+    <p class="subtitle">Advanced Stock Price Prediction using Machine Learning</p>
     
-    <div class="input-group">
-      <input type="text" id="ticker" placeholder="e.g., AAPL, TSLA, AMZN" />
-      <button onclick="predictStock()">Predict</button>
+    <div class="input-section">
+      <form class="input-group" onsubmit="event.preventDefault(); predictStock();">
+        <label for="ticker" class="visually-hidden">Stock Ticker</label>
+        <input
+          type="text"
+          id="ticker"
+          placeholder="Enter ticker symbol (e.g., AAPL, GOOGL, TSLA)"
+          aria-describedby="ticker-error"
+          required
+        >
+        <button type="submit" id="predict-btn">
+          <span class="btn-text">Predict Price</span>
+        </button>
+      </form>
+      <div id="ticker-error" class="error" aria-live="polite"></div>
     </div>
-    
-    <div id="result"></div>
-  </div>
 
-  <script src="./scripts/earnings.js"></script>
-  <script src="./scripts/stocks.js"></script>
+    <div id="result-section" class="result-section">
+      <div id="current-price" class="current-price"></div>
+      
+      <div class="chart-container">
+        <canvas id="stockChart" width="400" height="200"></canvas>
+      </div>
+      
+      <div id="predictions-table" class="predictions-table"></div>
+    </div>
+  </main>
+
+  <script>
+    let chart;
+    let isLoading = false;
+
+    // Mock API function - replace with actual backend call
+    async function fetchStockPrediction(ticker) {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Mock data generation
+      const basePrice = Math.random() * 200 + 50;
+      const volatility = 0.1;
+      
+      const predictions = [
+        { label: "Current", price: basePrice, days: 0 },
+        { label: "1 Day", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 0.3), days: 1 },
+        { label: "1 Week", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 0.8), days: 7 },
+        { label: "1 Month", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 1.5), days: 30 },
+        { label: "3 Months", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 2), days: 90 },
+        { label: "1 Year", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 3), days: 365 }
+      ];
+
+      return {
+        ticker: ticker.toUpperCase(),
+        currentPrice: basePrice,
+        predictions: predictions
+      };
+    }
+
+    async function predictStock() {
+      if (isLoading) return;
+      
+      const ticker = document.getElementById("ticker").value.toUpperCase().trim();
+      const errorEl = document.getElementById("ticker-error");
+      const resultSection = document.getElementById("result-section");
+      const predictBtn = document.getElementById("predict-btn");
+
+      // Validation
+      if (!ticker) {
+        showError("Please enter a valid ticker symbol.");
+        return;
+      }
+
+      if (!/^[A-Z]{1,5}$/.test(ticker)) {
+        showError("Please enter a valid ticker symbol (1-5 letters).");
+        return;
+      }
+
+      // Reset state
+      hideError();
+      setLoading(true);
+      hideResults();
+
+      try {
+        const data = await fetchStockPrediction(ticker);
+        displayResults(data);
+        showResults();
+      } catch (error) {
+        showError(`Error fetching data for ${ticker}. Please try again.`);
+        console.error("Prediction error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function displayResults(data) {
+      const { ticker, currentPrice, predictions } = data;
+      
+      // Update current price
+      const currentPriceEl = document.getElementById("current-price");
+      currentPriceEl.textContent = `${ticker}: $${currentPrice.toFixed(2)}`;
+
+      // Update chart
+      updateChart(ticker, predictions);
+
+      // Update predictions table
+      updatePredictionsTable(predictions);
+    }
+
+    function updateChart(ticker, predictions) {
+      if (chart) {
+        chart.destroy();
+      }
+
+      const ctx = document.getElementById("stockChart").getContext("2d");
+      
+      const labels = predictions.map(p => p.label);
+      const prices = predictions.map(p => p.price);
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `${ticker} Price Prediction`,
+            data: prices,
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#667eea',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointHoverBackgroundColor: '#764ba2',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            intersect: false,
+            mode: 'index'
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                font: {
+                  size: 14,
+                  weight: '600'
+                },
+                color: '#2c3e50'
+              }
+            },
+            title: {
+              display: true,
+              text: `${ticker} Stock Price Projection`,
+              font: {
+                size: 16,
+                weight: '600'
+              },
+              color: '#2c3e50',
+              padding: 20
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: '#ffffff',
+              bodyColor: '#ffffff',
+              borderColor: '#667eea',
+              borderWidth: 1,
+              cornerRadius: 10,
+              displayColors: false,
+              callbacks: {
+                label: function(context) {
+                  return `Price: $${context.parsed.y.toFixed(2)}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              title: {
+                display: true,
+                text: "Price (USD)",
+                font: {
+                  size: 14,
+                  weight: '600'
+                },
+                color: '#2c3e50'
+              },
+              grid: {
+                color: 'rgba(0, 0, 0, 0.1)'
+              },
+              ticks: {
+                callback: function(value) {
+                  return '$' + value.toFixed(2);
+                },
+                color: '#7f8c8d'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: "Time Period",
+                font: {
+                  size: 14,
+                  weight: '600'
+                },
+                color: '#2c3e50'
+              },
+              grid: {
+                color: 'rgba(0, 0, 0, 0.1)'
+              },
+              ticks: {
+                color: '#7f8c8d'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updatePredictionsTable(predictions) {
+      const container = document.getElementById("predictions-table");
+      const currentPrice = predictions[0].price;
+      
+      let tableHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Time Period</th>
+              <th>Predicted Price</th>
+              <th>Change</th>
+              <th>% Change</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      predictions.forEach((pred, index) => {
+        if (index === 0) return; // Skip current price row
+        
+        const change = pred.price - currentPrice;
+        const percentChange = (change / currentPrice) * 100;
+        const changeClass = change >= 0 ? 'price-up' : 'price-down';
+        const changeSymbol = change >= 0 ? '+' : '';
+
+        tableHTML += `
+          <tr>
+            <td><strong>${pred.label}</strong></td>
+            <td><strong>$${pred.price.toFixed(2)}</strong></td>
+            <td><span class="price-change ${changeClass}">${changeSymbol}$${change.toFixed(2)}</span></td>
+            <td><span class="price-change ${changeClass}">${changeSymbol}${percentChange.toFixed(2)}%</span></td>
+          </tr>
+        `;
+      });
+
+      tableHTML += '</tbody></table>';
+      container.innerHTML = tableHTML;
+    }
+
+    function setLoading(loading) {
+      isLoading = loading;
+      const btn = document.getElementById("predict-btn");
+      const btnText = btn.querySelector(".btn-text");
+      
+      if (loading) {
+        btn.disabled = true;
+        btnText.innerHTML = '<div class="loading"></div>';
+      } else {
+        btn.disabled = false;
+        btnText.textContent = "Predict Price";
+      }
+    }
+
+    function showError(message) {
+      const errorEl = document.getElementById("ticker-error");
+      errorEl.textContent = message;
+      errorEl.classList.add("show");
+    }
+
+    function hideError() {
+      const errorEl = document.getElementById("ticker-error");
+      errorEl.classList.remove("show");
+    }
+
+    function showResults() {
+      const resultSection = document.getElementById("result-section");
+      resultSection.classList.add("show");
+    }
+
+    function hideResults() {
+      const resultSection = document.getElementById("result-section");
+      resultSection.classList.remove("show");
+    }
+
+    // Allow Enter key to trigger prediction
+    document.getElementById("ticker").addEventListener("keypress", function(event) {
+      if (event.key === "Enter" && !isLoading) {
+        event.preventDefault();
+        predictStock();
+      }
+    });
+
+    // Auto-focus on ticker input
+    window.addEventListener("load", function() {
+      document.getElementById("ticker").focus();
+    });
+  </script>
 </body>
 </html>

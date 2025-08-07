@@ -1,108 +1,98 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
 import yfinance as yf
 import xgboost as xgb
 import pandas as pd
-import matplotlib.pyplot as plt
-import io
 from datetime import datetime, timedelta
+from functools import lru_cache
+import numpy as np
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://localhost"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-model = xgb.XGBRegressor()
+@lru_cache(maxsize=100)
+def fetch_stock_data(ticker: str, period: str = "2y"):
+    try:
+        df = yf.download(ticker, period=period)
+        if df.empty:
+            raise ValueError(f"No data found for ticker {ticker}")
+        return df
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error fetching data for {ticker}: {str(e)}")
 
-@app.get("/stocks")
-def get_mock_stocks():
-    return [
-        {"name": "Apple Inc.", "ticker": "AAPL", "price": 210.12, "pe_ratio": 28.4},
-        {"name": "Tesla Inc.", "ticker": "TSLA", "price": 890.34, "pe_ratio": 58.7},
-        {"name": "Amazon.com Inc.", "ticker": "AMZN", "price": 132.45, "pe_ratio": 75.9}
-    ]
+def prepare_features(df):
+    df = df.copy()
+    df["MA20"] = df["Close"].rolling(window=20).mean()
+    df["MA50"] = df["Close"].rolling(window=50).mean()
+    df["Volatility"] = df["Close"].rolling(window=20).std()
+    df["Volume"] = df["Volume"]
+    df["Tomorrow"] = df["Close"].shift(-1)
+    df.dropna(inplace=True)
+    return df
 
 @app.get("/predict/{ticker}")
-def predict_stock_price(ticker: str):
-    df = yf.download(ticker, period="1y")
-    df["Tomorrow"] = df["Close"].shift(-1)
-    df.dropna(inplace=True)
+async def predict_stock_price(ticker: str):
+    try:
+        df = fetch_stock_data(ticker)
+        df = prepare_features(df)
 
-    X = df[["Close"]]
-    y = df["Tomorrow"]
-    model.fit(X, y)
+        features = ["Close", "MA20", "MA50", "Volatility", "Volume"]
+        X = df[features]
+        y = df["Tomorrow"]
 
-    current_price = df["Close"].iloc[-1]
+        model = xgb.XGBRegressor(n_estimators=100, learning_rate=0.1)
+        model.fit(X, y)
 
-    def forecast(days):
-        price = current_price
-        for _ in range(days):
-            price = model.predict([[price]])[0]
-        return round(price, 2)
+        current_data = df[features].iloc[-1:].values
+        current_price = df["Close"].iloc[-1]
 
-    return {
-        "today": round(current_price, 2),
-        "1_day": forecast(1),
-        "1_week": forecast(5),
-        "1_month": forecast(21),
-        "1_year": forecast(252),
-        "5_years": forecast(252*5),
-        "all": [
-            {"label": "Today", "price": round(current_price, 2)},
-            {"label": "1 Day", "price": forecast(1)},
-            {"label": "1 Week", "price": forecast(5)},
-            {"label": "1 Month", "price": forecast(21)},
-            {"label": "1 Year", "price": forecast(252)},
-            {"label": "5 Years", "price": forecast(252*5)}
-        ]
-    }
+        def forecast(days):
+            price = current_price
+            data = current_data.copy()
+            for _ in range(days):
+                pred = model.predict(data)[0]
+                price = pred
+                # Update features for next prediction
+                data[0, 0] = price  # Update Close
+                data[0, 1] = (data[0, 1] * 19 + price) / 20  # Update MA20
+                data[0, 2] = (data[0, 2] * 49 + price) / 50  # Update MA50
+                data[0, 3] = df["Volatility"].iloc[-20:].mean()  # Approximate volatility
+                data[0, 4] = df["Volume"].iloc[-1]  # Keep last volume
+            return round(price, 2)
+
+        return {
+            "ticker": ticker,
+            "today": round(current_price, 2),
+            "predictions": [
+                {"label": "Today", "price": round(current_price, 2)},
+                {"label": "1 Day", "price": forecast(1)},
+                {"label": "1 Week", "price": forecast(5)},
+                {"label": "1 Month", "price": forecast(21)},
+                {"label": "1 Year", "price": forecast(252)},
+                {"label": "5 Years", "price": forecast(252 * 5)}
+            ]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/stock-history/{ticker}")
-def get_stock_history(ticker: str):
-    df = yf.download(ticker, period="1y")
-    df.reset_index(inplace=True)
-    return {
-        "ticker": ticker,
-        "history": [
-            {"date": row["Date"].strftime("%Y-%m-%d"), "price": row["Close"]}
-            for _, row in df.iterrows()
-        ]
-    }
-
-@app.get("/quarterly-predict-plot/{ticker}")
-def quarterly_predict_plot(ticker: str):
-    df = yf.download(ticker, period="2y")
-    df["Tomorrow"] = df["Close"].shift(-1)
-    df.dropna(inplace=True)
-
-    X = df[["Close"]]
-    y = df["Tomorrow"]
-    model.fit(X, y)
-
-    current_price = df["Close"].iloc[-1]
-    predictions = [current_price]
-    for _ in range(60):
-        current_price = model.predict([[current_price]])[0]
-        predictions.append(current_price)
-
-    dates = pd.date_range(start=datetime.now(), periods=61, freq="B")
-
-    plt.figure(figsize=(10, 5))
-    plt.plot(dates, predictions, label="Predicted")
-    plt.title(f"{ticker} Quarterly Prediction")
-    plt.xlabel("Date")
-    plt.ylabel("Price")
-    plt.legend()
-    plt.tight_layout()
-
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    return StreamingResponse(buf, media_type="image/png")
-
+async def get_stock_history(ticker: str):
+    try:
+        df = fetch_stock_data(ticker, period="1y")
+        df.reset_index(inplace=True)
+        return {
+            "ticker": ticker,
+            "history": [
+                {"date": row["Date"].strftime("%Y-%m-%d"), "price": round(row["Close"], 2)}
+                for _, row in df.iterrows()
+            ]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

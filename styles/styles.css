@@ -1,12 +1,12 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   background: #f4f6f9;
   margin: 0;
-  padding: 0;
+  padding: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .container {
@@ -16,7 +16,7 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 h1 {
@@ -24,45 +24,93 @@ h1 {
   color: #2c3e50;
 }
 
+p {
+  color: #34495e;
+}
+
 .input-group {
   display: flex;
-  margin-top: 1rem;
   gap: 0.5rem;
+  margin: 1rem 0;
 }
 
 input {
   flex: 1;
-  padding: 0.6rem;
+  padding: 0.75rem;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
 }
 
 button {
-  padding: 0.6rem 1rem;
+  padding: 0.75rem 1.5rem;
   background-color: #3498db;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 button:hover {
   background-color: #2980b9;
 }
 
+.error {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
 #result {
-  margin-top: 1.5rem;
+  margin: 1.5rem 0;
   font-size: 1.2rem;
   color: #2d3436;
 }
-body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
+
 #chartContainer {
-      width: 80%;
-      max-width: 600px;
-      margin: 30px auto;
-    }
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.prediction-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+.prediction-table th,
+.prediction-table td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.prediction-table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+  .input-group {
+    flex-direction: column;
+  }
+  button {
+    width: 100%;
+  }
+}
