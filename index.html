@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RASA LLC - Advanced Stock Market Analysis</title>
+  <title>RASA LLC - Educational Stock Market Platform</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -47,19 +46,32 @@
       font-size: 1.1rem;
     }
 
+    .disclaimer {
+      background: rgba(255, 193, 7, 0.1);
+      border: 2px solid #ffc107;
+      color: #856404;
+      padding: 1rem;
+      margin: 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      text-align: center;
+    }
+
     .nav-tabs {
       display: flex;
       background: #f8f9fa;
       border-bottom: 2px solid #e9ecef;
+      flex-wrap: wrap;
     }
 
     .tab-button {
       flex: 1;
-      padding: 1rem 2rem;
+      min-width: 120px;
+      padding: 1rem;
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: #6c757d;
       transition: all 0.3s ease;
@@ -95,6 +107,136 @@
       display: block;
     }
 
+    .educational-section {
+      background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+      padding: 1.5rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      border-left: 5px solid #2196f3;
+    }
+
+    .educational-section h3 {
+      color: #1976d2;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .educational-section .icon {
+      font-size: 1.2rem;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .concept-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid #667eea;
+    }
+
+    .concept-card h4 {
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .concept-card .definition {
+      color: #666;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+
+    .risk-levels {
+      display: flex;
+      justify-content: space-between;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .risk-level {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      text-align: center;
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .risk-low {
+      background: rgba(76, 175, 80, 0.1);
+      color: #4caf50;
+      border: 2px solid #4caf50;
+    }
+
+    .risk-medium {
+      background: rgba(255, 152, 0, 0.1);
+      color: #ff9800;
+      border: 2px solid #ff9800;
+    }
+
+    .risk-high {
+      background: rgba(244, 67, 54, 0.1);
+      color: #f44336;
+      border: 2px solid #f44336;
+    }
+
+    .quiz-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
+    }
+
+    .quiz-question {
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-option {
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .quiz-option:hover {
+      background: rgba(102, 126, 234, 0.1);
+      border-color: #667eea;
+    }
+
+    .quiz-option.selected {
+      background: rgba(102, 126, 234, 0.2);
+      border-color: #667eea;
+    }
+
+    .quiz-option.correct {
+      background: rgba(76, 175, 80, 0.2);
+      border-color: #4caf50;
+    }
+
+    .quiz-option.incorrect {
+      background: rgba(244, 67, 54, 0.2);
+      border-color: #f44336;
+    }
+
     .input-section {
       background: white;
       padding: 1.5rem;
@@ -128,10 +270,6 @@
     .ticker-input {
       flex: 1;
       min-width: 200px;
-    }
-
-    .model-select {
-      min-width: 150px;
     }
 
     button {
@@ -191,13 +329,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .results-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
     .chart-container {
       background: white;
       padding: 1.5rem;
@@ -205,6 +336,7 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
       position: relative;
       height: 400px;
+      margin-bottom: 2rem;
     }
 
     .chart-container canvas {
@@ -220,141 +352,154 @@
       text-align: center;
     }
 
-    .comparison-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .stock-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-      position: relative;
-    }
-
-    .stock-card h4 {
-      color: #2c3e50;
-      margin-bottom: 0.5rem;
-    }
-
-    .stock-price {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-
-    .price-change {
-      font-weight: 600;
-      padding: 0.25rem 0.5rem;
-      border-radius: 5px;
-      font-size: 0.9rem;
-    }
-
-    .price-up {
-      background: rgba(0, 200, 81, 0.1);
-      color: #00c851;
-    }
-
-    .price-down {
-      background: rgba(231, 76, 60, 0.1);
-      color: #e74c3c;
-    }
-
-    .remove-stock {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .portfolio-summary {
-      background: linear-gradient(135deg, #00c851, #00a843);
+    .learning-path {
+      background: linear-gradient(135deg, #4caf50, #45a049);
       color: white;
       padding: 2rem;
       border-radius: 15px;
       margin-bottom: 2rem;
-      text-align: center;
     }
 
-    .portfolio-stats {
+    .learning-path h3 {
+      margin-bottom: 1rem;
+    }
+
+    .path-steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1rem;
       margin-top: 1rem;
     }
 
-    .stat-item {
-      background: rgba(255, 255, 255, 0.2);
+    .path-step {
+      background: rgba(255, 255, 255, 0.1);
       padding: 1rem;
       border-radius: 10px;
+      border-left: 4px solid rgba(255, 255, 255, 0.5);
     }
 
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: bold;
+    .path-step h4 {
+      margin-bottom: 0.5rem;
     }
 
-    .stat-label {
-      font-size: 0.9rem;
-      opacity: 0.9;
+    .path-step.completed {
+      background: rgba(255, 255, 255, 0.2);
+      border-left-color: #fff;
     }
 
-    .predictions-table {
+    .calculator {
       background: white;
+      padding: 2rem;
       border-radius: 15px;
-      overflow: hidden;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
     }
 
-    .predictions-table table {
-      width: 100%;
-      border-collapse: collapse;
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
 
-    .predictions-table th {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
+    .calculator-result {
+      background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
       padding: 1rem;
-      text-align: left;
+      border-radius: 10px;
+      border-left: 4px solid #4caf50;
+      margin-top: 1rem;
+    }
+
+    .metric-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .metric-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+      color: #666;
       font-weight: 600;
     }
 
-    .predictions-table td {
-      padding: 1rem;
+    .interactive-example {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
+    }
+
+    .scenario-selector {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .scenario-btn {
+      padding: 0.5rem 1rem;
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .scenario-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .glossary {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .glossary-search {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .glossary-term {
       border-bottom: 1px solid #e9ecef;
+      padding: 1rem 0;
     }
 
-    .predictions-table tr:hover td {
-      background-color: #f8f9fa;
+    .glossary-term:last-child {
+      border-bottom: none;
     }
 
-    .model-info {
-      background: #e3f2fd;
-      padding: 1rem;
-      border-radius: 10px;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #1976d2;
+    .term-name {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .term-definition {
+      color: #666;
+      line-height: 1.6;
     }
 
     @media (max-width: 768px) {
-      .results-grid {
-        grid-template-columns: 1fr;
-      }
-      
       .input-group {
         flex-direction: column;
         align-items: stretch;
@@ -368,126 +513,293 @@
         flex: none;
         min-width: 50%;
       }
+
+      .risk-levels {
+        flex-direction: column;
+      }
+
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>📈 RASA LLC</h1>
-      <p>Advanced Stock Market Analysis & Portfolio Management Platform</p>
+      <h1>📈 RASA Educational Stock Platform</h1>
+      <p>Learn Smart Investing Through Interactive Analysis & Education</p>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ <strong>Educational Purpose Only:</strong> This platform is for learning about stock market concepts. All predictions are simulations based on historical data and should NOT be used for actual investment decisions. Past performance does not guarantee future results. Always consult with a qualified financial advisor before investing.
     </div>
 
     <nav class="nav-tabs">
-      <button class="tab-button active" onclick="switchTab('predictions')">Price Predictions</button>
-      <button class="tab-button" onclick="switchTab('historical')">Historical Analysis</button>
-      <button class="tab-button" onclick="switchTab('comparison')">Stock Comparison</button>
-      <button class="tab-button" onclick="switchTab('portfolio')">Portfolio Tracker</button>
+      <button class="tab-button active" onclick="switchTab('learn')">Learn Basics</button>
+      <button class="tab-button" onclick="switchTab('analysis')">Stock Analysis</button>
+      <button class="tab-button" onclick="switchTab('calculator')">Investment Calculator</button>
+      <button class="tab-button" onclick="switchTab('quiz')">Knowledge Quiz</button>
+      <button class="tab-button" onclick="switchTab('scenarios')">Market Scenarios</button>
+      <button class="tab-button" onclick="switchTab('glossary')">Glossary</button>
     </nav>
 
-    <!-- Price Predictions Tab -->
-    <div id="predictions-tab" class="tab-content active">
+    <!-- Learn Basics Tab -->
+    <div id="learn-tab" class="tab-content active">
+      <div class="learning-path">
+        <h3>🎯 Your Learning Journey</h3>
+        <p>Master stock investing fundamentals step by step</p>
+        <div class="path-steps" id="learning-steps">
+          <div class="path-step completed">
+            <h4>1. Stock Basics</h4>
+            <p>Understanding what stocks represent and why companies issue them</p>
+          </div>
+          <div class="path-step">
+            <h4>2. Risk & Return</h4>
+            <p>The fundamental relationship between risk and potential rewards</p>
+          </div>
+          <div class="path-step">
+            <h4>3. Valuation Methods</h4>
+            <p>How to assess if a stock is fairly priced</p>
+          </div>
+          <div class="path-step">
+            <h4>4. Portfolio Strategy</h4>
+            <p>Diversification and long-term thinking</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="educational-section">
+        <h3><span class="icon">🧠</span> What Are Stocks?</h3>
+        <p><strong>Simple Definition:</strong> When you buy a stock, you're purchasing a small piece of ownership in a company. If the company does well, your stock typically becomes more valuable. If it struggles, your stock may lose value.</p>
+        
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h4>Share Ownership</h4>
+            <div class="definition">Each share represents a fraction of company ownership</div>
+            <p>If Apple has 1 billion shares and you own 100, you own 0.00001% of Apple. You have voting rights and may receive dividends.</p>
+          </div>
+          
+          <div class="concept-card">
+            <h4>Market Price</h4>
+            <div class="definition">The current price investors are willing to pay</div>
+            <p>Stock prices change constantly based on supply and demand. More buyers than sellers pushes price up, and vice versa.</p>
+          </div>
+          
+          <div class="concept-card">
+            <h4>Dividends</h4>
+            <div class="definition">Cash payments some companies make to shareholders</div>
+            <p>Not all companies pay dividends. Growing companies often reinvest profits, while mature companies may pay regular dividends.</p>
+          </div>
+          
+          <div class="concept-card">
+            <h4>Capital Gains</h4>
+            <div class="definition">Profit from selling a stock for more than you paid</div>
+            <p>If you buy at $50 and sell at $60, you have a $10 capital gain per share (minus taxes and fees).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="educational-section">
+        <h3><span class="icon">⚖️</span> Understanding Risk Levels</h3>
+        <p>All investments carry risk. Understanding different risk levels helps you make informed decisions.</p>
+        
+        <div class="risk-levels">
+          <div class="risk-level risk-low">
+            <h4>Low Risk</h4>
+            <p>Large, stable companies<br>Lower potential returns<br>Example: Coca-Cola, Walmart</p>
+          </div>
+          <div class="risk-level risk-medium">
+            <h4>Medium Risk</h4>
+            <p>Growing companies<br>Moderate volatility<br>Example: Most S&P 500 stocks</p>
+          </div>
+          <div class="risk-level risk-high">
+            <h4>High Risk</h4>
+            <p>Small or volatile companies<br>High potential returns/losses<br>Example: Start-ups, crypto stocks</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="educational-section">
+        <h3><span class="icon">📊</span> Key Investment Principles</h3>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h4>Diversification</h4>
+            <p><strong>"Don't put all eggs in one basket"</strong><br>Spread investments across different companies, industries, and asset types to reduce risk.</p>
+          </div>
+          
+          <div class="concept-card">
+            <h4>Time Horizon</h4>
+            <p><strong>Long-term vs Short-term</strong><br>Stocks are generally better for long-term goals (5+ years). Short-term trading is much riskier.</p>
+          </div>
+          
+          <div class="concept-card">
+            <h4>Dollar-Cost Averaging</h4>
+            <p><strong>Invest regularly over time</strong><br>Instead of investing all at once, invest the same amount regularly to smooth out price fluctuations.</p>
+          </div>
+          
+          <div class="concept-card">
+            <h4>Research & Patience</h4>
+            <p><strong>Know what you own</strong><br>Understand the company's business model, finances, and growth prospects before investing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock Analysis Tab -->
+    <div id="analysis-tab" class="tab-content">
       <div class="input-section">
         <div class="input-group">
           <input type="text" id="ticker" class="ticker-input" placeholder="Enter ticker (e.g., AAPL, GOOGL)" required>
-          <select id="model-select" class="model-select">
-            <option value="xgboost">XGBoost</option>
-            <option value="linear">Linear Regression</option>
-            <option value="lstm">LSTM Neural Network</option>
-          </select>
-          <button onclick="predictStock()" id="predict-btn">
-            <span class="btn-text">Predict Price</span>
+          <button onclick="analyzeStock()" id="analyze-btn">
+            <span class="btn-text">Analyze Stock</span>
           </button>
         </div>
         <div id="ticker-error" class="error"></div>
       </div>
 
-      <div id="predictions-results" style="display: none;">
-        <div class="results-grid">
-          <div class="chart-container">
-            <h3>Price Prediction Chart</h3>
-            <canvas id="predictionChart"></canvas>
-          </div>
-          <div class="predictions-table">
-            <table id="predictions-table-content">
-              <!-- Populated by JavaScript -->
-            </table>
-          </div>
+      <div id="analysis-results" style="display: none;">
+        <div class="educational-section">
+          <h3><span class="icon">🔍</span> Understanding This Analysis</h3>
+          <p><strong>Remember:</strong> This is educational simulation only. Real stock analysis requires current financial data, news, analyst reports, and deep company research.</p>
         </div>
-        <div class="model-info" id="model-info">
+
+        <div class="metric-cards" id="stock-metrics">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="chart-container">
+          <h3>Simulated Price Movement & Learning</h3>
+          <canvas id="analysisChart"></canvas>
+        </div>
+
+        <div class="educational-section" id="analysis-explanation">
           <!-- Populated by JavaScript -->
         </div>
       </div>
     </div>
 
-    <!-- Historical Analysis Tab -->
-    <div id="historical-tab" class="tab-content">
-      <div class="input-section">
-        <div class="input-group">
-          <input type="text" id="historical-ticker" placeholder="Enter ticker for historical analysis" required>
-          <select id="historical-period">
-            <option value="1y">1 Year</option>
-            <option value="2y">2 Years</option>
-            <option value="5y">5 Years</option>
-            <option value="max">Maximum</option>
-          </select>
-          <button onclick="loadHistoricalData()">Analyze History</button>
+    <!-- Investment Calculator Tab -->
+    <div id="calculator-tab" class="tab-content">
+      <div class="educational-section">
+        <h3><span class="icon">🧮</span> Investment Growth Calculator</h3>
+        <p>See how compound interest can grow your investments over time. This demonstrates why starting early and investing regularly is so powerful.</p>
+      </div>
+
+      <div class="calculator">
+        <h3>Compound Interest Calculator</h3>
+        <div class="calculator-grid">
+          <div>
+            <label for="initial-investment">Initial Investment ($)</label>
+            <input type="number" id="initial-investment" value="1000" min="0" step="100">
+          </div>
+          <div>
+            <label for="monthly-contribution">Monthly Contribution ($)</label>
+            <input type="number" id="monthly-contribution" value="200" min="0" step="50">
+          </div>
+          <div>
+            <label for="annual-return">Annual Return (%)</label>
+            <input type="number" id="annual-return" value="7" min="-20" max="30" step="0.5">
+          </div>
+          <div>
+            <label for="investment-years">Investment Period (Years)</label>
+            <input type="number" id="investment-years" value="10" min="1" max="50">
+          </div>
         </div>
-        <div id="historical-error" class="error"></div>
-      </div>
-
-      <div id="historical-results" style="display: none;">
-        <div class="chart-container">
-          <h3>Historical Price Movement</h3>
-          <canvas id="historicalChart"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stock Comparison Tab -->
-    <div id="comparison-tab" class="tab-content">
-      <div class="input-section">
-        <div class="input-group">
-          <input type="text" id="comparison-ticker" placeholder="Enter ticker to add to comparison">
-          <button onclick="addToComparison()">Add Stock</button>
-          <button onclick="clearComparison()" style="background: #e74c3c;">Clear All</button>
-        </div>
-        <div id="comparison-error" class="error"></div>
-      </div>
-
-      <div class="comparison-container" id="comparison-container">
-        <!-- Populated by JavaScript -->
-      </div>
-
-      <div id="comparison-chart-container" style="display: none;">
-        <div class="chart-container">
-          <h3>Stock Price Comparison</h3>
-          <canvas id="comparisonChart"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Portfolio Tracker Tab -->
-    <div id="portfolio-tab" class="tab-content">
-      <div class="input-section">
-        <div class="input-group">
-          <input type="text" id="portfolio-ticker" placeholder="Stock ticker">
-          <input type="number" id="portfolio-shares" placeholder="Shares owned" step="0.001">
-          <input type="number" id="portfolio-price" placeholder="Purchase price" step="0.01">
-          <button onclick="addToPortfolio()">Add to Portfolio</button>
-        </div>
-        <div id="portfolio-error" class="error"></div>
-      </div>
-
-      <div id="portfolio-summary" class="portfolio-summary" style="display: none;">
-        <h3>Portfolio Summary</h3>
-        <div class="portfolio-stats" id="portfolio-stats">
+        
+        <button onclick="calculateInvestment()">Calculate Growth</button>
+        
+        <div class="calculator-result" id="investment-result" style="display: none;">
           <!-- Populated by JavaScript -->
         </div>
       </div>
 
-      <div id="portfolio-holdings" class="comparison-container">
+      <div class="chart-container" id="growth-chart-container" style="display: none;">
+        <h3>Investment Growth Over Time</h3>
+        <canvas id="growthChart"></canvas>
+      </div>
+
+      <div class="educational-section">
+        <h3><span class="icon">💡</span> What This Shows You</h3>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h4>Compound Interest</h4>
+            <p>Your money grows exponentially because you earn returns on your returns. Einstein allegedly called this "the eighth wonder of the world."</p>
+          </div>
+          <div class="concept-card">
+            <h4>Time Value</h4>
+            <p>Starting early makes a huge difference. Ten extra years of investing often outweighs doubling your monthly contribution.</p>
+          </div>
+          <div class="concept-card">
+            <h4>Regular Investing</h4>
+            <p>Small, consistent contributions add up significantly over time and help smooth out market volatility.</p>
+          </div>
+          <div class="concept-card">
+            <h4>Historical Context</h4>
+            <p>The S&P 500 has averaged about 10% annually over long periods, but expect significant year-to-year variation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Knowledge Quiz Tab -->
+    <div id="quiz-tab" class="tab-content">
+      <div class="educational-section">
+        <h3><span class="icon">🎯</span> Test Your Knowledge</h3>
+        <p>These questions help reinforce key investing concepts. Take your time and think through each answer.</p>
+      </div>
+
+      <div class="quiz-container" id="quiz-container">
         <!-- Populated by JavaScript -->
+      </div>
+      
+      <div id="quiz-results" style="display: none;">
+        <div class="educational-section">
+          <h3>Quiz Complete!</h3>
+          <p id="quiz-score"></p>
+          <button onclick="restartQuiz()">Take Quiz Again</button>
+          <button onclick="showQuizExplanations()">Show Detailed Explanations</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market Scenarios Tab -->
+    <div id="scenarios-tab" class="tab-content">
+      <div class="educational-section">
+        <h3><span class="icon">🎭</span> Learn From Market Scenarios</h3>
+        <p>Explore how different market conditions affect investments. Understanding these scenarios helps prepare you for real market volatility.</p>
+      </div>
+
+      <div class="interactive-example">
+        <h3>Market Scenario Simulator</h3>
+        <div class="scenario-selector">
+          <button class="scenario-btn active" onclick="loadScenario('bull')">Bull Market</button>
+          <button class="scenario-btn" onclick="loadScenario('bear')">Bear Market</button>
+          <button class="scenario-btn" onclick="loadScenario('crash')">Market Crash</button>
+          <button class="scenario-btn" onclick="loadScenario('recovery')">Recovery</button>
+          <button class="scenario-btn" onclick="loadScenario('sideways')">Sideways Market</button>
+        </div>
+
+        <div id="scenario-content">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="chart-container">
+          <h3>Scenario Visualization</h3>
+          <canvas id="scenarioChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Glossary Tab -->
+    <div id="glossary-tab" class="tab-content">
+      <div class="glossary">
+        <h3>📖 Investment Glossary</h3>
+        <input type="text" class="glossary-search" id="glossary-search" placeholder="Search terms..." onkeyup="searchGlossary()">
+        
+        <div id="glossary-terms">
+          <!-- Populated by JavaScript -->
+        </div>
       </div>
     </div>
   </div>
@@ -495,103 +807,222 @@
   <script>
     // Global state
     let charts = {};
-    let comparisonStocks = [];
-    let portfolioHoldings = [];
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+    let selectedAnswers = [];
+
+    // Quiz questions
+    const quizQuestions = [
+      {
+        question: "What does owning stock in a company mean?",
+        options: [
+          "You own a piece of the company and have voting rights",
+          "You are lending money to the company",
+          "You are guaranteed to make money",
+          "You can control the company's decisions"
+        ],
+        correct: 0,
+        explanation: "When you buy stock, you become a partial owner of the company with voting rights proportional to your ownership percentage."
+      },
+      {
+        question: "What is the relationship between risk and return in investing?",
+        options: [
+          "Higher risk always means higher returns",
+          "There's generally a positive relationship - higher risk typically offers potential for higher returns",
+          "Risk and return are completely unrelated",
+          "Lower risk always means higher returns"
+        ],
+        correct: 1,
+        explanation: "Higher risk investments generally offer the potential for higher returns, but there are no guarantees. This is a fundamental principle of investing."
+      },
+      {
+        question: "What is diversification?",
+        options: [
+          "Investing all your money in one great stock",
+          "Spreading investments across different assets to reduce risk",
+          "Only investing in foreign companies",
+          "Selling stocks frequently"
+        ],
+        correct: 1,
+        explanation: "Diversification means spreading investments across different companies, sectors, and asset classes to reduce the impact if one investment performs poorly."
+      },
+      {
+        question: "What is compound interest?",
+        options: [
+          "Interest paid only on the original investment",
+          "Interest paid on both the original investment and previously earned interest",
+          "A type of bank account",
+          "Interest that decreases over time"
+        ],
+        correct: 1,
+        explanation: "Compound interest means earning returns on your returns. Your money grows exponentially because each year's gains become part of the base for the next year's gains."
+      },
+      {
+        question: "What is the best strategy for most long-term investors?",
+        options: [
+          "Try to time the market perfectly",
+          "Invest regularly and stay consistent regardless of market conditions",
+          "Only invest when the market is at all-time highs",
+          "Move all money to cash during any market decline"
+        ],
+        correct: 1,
+        explanation: "Dollar-cost averaging (regular investing) and staying consistent through market ups and downs typically produces better results than trying to time the market."
+      }
+    ];
+
+    // Glossary terms
+    const glossaryTerms = [
+      {
+        term: "Stock",
+        definition: "A share representing ownership in a corporation. Stockholders have voting rights and may receive dividends."
+      },
+      {
+        term: "Dividend",
+        definition: "A payment made by a corporation to its shareholders, usually quarterly, representing a portion of the company's profits."
+      },
+      {
+        term: "Market Capitalization",
+        definition: "The total value of a company's shares. Calculated by multiplying share price by number of outstanding shares."
+      },
+      {
+        term: "P/E Ratio",
+        definition: "Price-to-Earnings ratio. Compares a company's stock price to its earnings per share. Used to evaluate if a stock is over or undervalued."
+      },
+      {
+        term: "Bull Market",
+        definition: "A period when stock prices are rising and investor confidence is high. Typically defined as a 20% increase from recent lows."
+      },
+      {
+        term: "Bear Market",
+        definition: "A period when stock prices are falling and investor sentiment is negative. Typically defined as a 20% decline from recent highs."
+      },
+      {
+        term: "Volatility",
+        definition: "The degree of price fluctuation in a stock or market. Higher volatility means larger price swings up and down."
+      },
+      {
+        term: "Diversification",
+        definition: "Spreading investments across different assets, sectors, or geographic regions to reduce risk."
+      },
+      {
+        term: "Dollar-Cost Averaging",
+        definition: "Investing a fixed amount regularly regardless of market conditions, which can reduce the impact of volatility."
+      },
+      {
+        term: "Compound Interest",
+        definition: "Earning returns on both your original investment and previously earned returns. The foundation of long-term wealth building."
+      },
+      {
+        term: "ETF",
+        definition: "Exchange-Traded Fund. A collection of stocks or bonds that trades like a single stock, providing instant diversification."
+      },
+      {
+        term: "Mutual Fund",
+        definition: "A professionally managed investment fund that pools money from multiple investors to buy securities."
+      },
+      {
+        term: "Risk Tolerance",
+        definition: "Your ability and willingness to withstand losses in your investments in pursuit of higher returns."
+      },
+      {
+        term: "Asset Allocation",
+        definition: "How you divide your investments among different asset categories like stocks, bonds, and cash."
+      },
+      {
+        term: "Blue Chip",
+        definition: "Stocks of large, well-established companies with a history of reliable performance and dividend payments."
+      }
+    ];
+
+    // Market scenarios
+    const marketScenarios = {
+      bull: {
+        title: "Bull Market (Rising Market)",
+        description: "A bull market occurs when stock prices rise 20% or more from recent lows, typically accompanied by economic growth and investor optimism.",
+        characteristics: [
+          "Stock prices trend upward over months or years",
+          "High investor confidence and optimism",
+          "Strong economic indicators",
+          "Low unemployment",
+          "Increased corporate profits"
+        ],
+        strategy: "During bull markets, consistent investing works well, but avoid getting overconfident. Remember that bull markets don't last forever.",
+        historicalExample: "The longest bull market in U.S. history lasted from 2009 to 2020, following the financial crisis recovery."
+      },
+      bear: {
+        title: "Bear Market (Falling Market)",
+        description: "A bear market is a 20% or greater decline in stock prices from recent highs, often lasting several months to years.",
+        characteristics: [
+          "Stock prices decline 20% or more",
+          "Widespread investor pessimism",
+          "Economic slowdown or recession",
+          "Rising unemployment",
+          "Declining corporate earnings"
+        ],
+        strategy: "Bear markets test investor discipline. Those who continue investing during downturns often benefit most from the eventual recovery.",
+        historicalExample: "The 2007-2009 bear market saw the S&P 500 fall 57%, but those who stayed invested recovered their losses by 2013."
+      },
+      crash: {
+        title: "Market Crash (Sudden Sharp Decline)",
+        description: "A market crash is a sudden, severe drop in stock prices, usually 10% or more in a few days, often triggered by panic selling.",
+        characteristics: [
+          "Rapid, severe price declines",
+          "High trading volumes",
+          "Panic selling by investors",
+          "Media coverage amplifies fear",
+          "Can trigger broader economic issues"
+        ],
+        strategy: "Crashes are scary but often short-lived. Avoid panic selling. Many crashes are followed by strong recoveries.",
+        historicalExample: "Black Monday (October 19, 1987) saw the Dow fall 22% in one day, but the market recovered within two years."
+      },
+      recovery: {
+        title: "Market Recovery",
+        description: "A recovery occurs when stock prices begin rising after a significant decline, often marking the end of a bear market.",
+        characteristics: [
+          "Stock prices start trending upward",
+          "Investor confidence slowly returns",
+          "Economic indicators improve",
+          "Corporate earnings begin growing",
+          "Unemployment starts declining"
+        ],
+        strategy: "Recoveries can be volatile with false starts. Stay disciplined and continue regular investing rather than trying to time the bottom.",
+        historicalExample: "After the 2020 COVID crash, markets recovered to new highs within months, rewarding patient investors."
+      },
+      sideways: {
+        title: "Sideways Market (Range-Bound)",
+        description: "A sideways market moves within a trading range without clear upward or downward trends, often lasting months or years.",
+        characteristics: [
+          "Prices fluctuate within a range",
+          "No clear trend direction",
+          "Mixed economic signals",
+          "Varying investor sentiment",
+          "Can test investor patience"
+        ],
+        strategy: "Sideways markets can be frustrating, but they're good times to continue regular investing and rebalance portfolios.",
+        historicalExample: "From 2000-2010, the S&P 500 had minimal net gains, but dividend reinvestment and regular contributions still built wealth."
+      }
+    };
 
     // Tab switching
     function switchTab(tabName) {
-      // Hide all tabs
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Show selected tab
       document.getElementById(`${tabName}-tab`).classList.add('active');
       
-      // Update tab buttons
       document.querySelectorAll('.tab-button').forEach(btn => {
         btn.classList.remove('active');
       });
       event.target.classList.add('active');
     }
 
-    // Mock API functions (replace with real backend calls)
-    async function fetchStockPrediction(ticker, model = 'xgboost') {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const basePrice = Math.random() * 300 + 100;
-      const volatility = 0.15;
-      
-      const predictions = [
-        { label: "Current", price: basePrice, days: 0 },
-        { label: "1 Day", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 0.2), days: 1 },
-        { label: "1 Week", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 0.6), days: 7 },
-        { label: "1 Month", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 1.2), days: 30 },
-        { label: "3 Months", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 1.8), days: 90 },
-        { label: "1 Year", price: basePrice * (1 + (Math.random() - 0.5) * volatility * 2.5), days: 365 }
-      ];
-
-      return {
-        ticker: ticker.toUpperCase(),
-        currentPrice: basePrice,
-        predictions: predictions,
-        model: model,
-        confidence: Math.random() * 0.3 + 0.7
-      };
-    }
-
-    async function fetchHistoricalData(ticker, period = '1y') {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const periodDays = {
-        '1y': 365,
-        '2y': 730,
-        '5y': 1825,
-        'max': 3650
-      };
-      
-      const days = periodDays[period] || 365;
-      const basePrice = Math.random() * 200 + 50;
-      const data = [];
-      
-      for (let i = days; i >= 0; i -= 7) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        
-        const timeProgress = (days - i) / days;
-        const trend = Math.sin(timeProgress * Math.PI * 4) * 0.3;
-        const noise = (Math.random() - 0.5) * 0.2;
-        const price = basePrice * (1 + trend + noise);
-        
-        data.push({
-          date: date.toISOString().split('T')[0],
-          price: Math.max(price, 10)
-        });
-      }
-      
-      return {
-        ticker: ticker.toUpperCase(),
-        history: data.sort((a, b) => new Date(a.date) - new Date(b.date))
-      };
-    }
-
-    async function fetchCurrentPrice(ticker) {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return {
-        ticker: ticker.toUpperCase(),
-        price: Math.random() * 300 + 50,
-        change: (Math.random() - 0.5) * 20,
-        changePercent: (Math.random() - 0.5) * 10
-      };
-    }
-
-    // Price Predictions
-    async function predictStock() {
+    // Stock Analysis Functions
+    async function analyzeStock() {
       const ticker = document.getElementById('ticker').value.toUpperCase().trim();
-      const model = document.getElementById('model-select').value;
       const errorEl = document.getElementById('ticker-error');
-      const resultsEl = document.getElementById('predictions-results');
-      const btn = document.getElementById('predict-btn');
+      const resultsEl = document.getElementById('analysis-results');
+      const btn = document.getElementById('analyze-btn');
 
       if (!ticker) {
         showError(errorEl, 'Please enter a ticker symbol');
@@ -602,356 +1033,415 @@
       setButtonLoading(btn, true);
 
       try {
-        const data = await fetchStockPrediction(ticker, model);
-        displayPredictionResults(data);
+        // Simulate analysis (replace with real API call)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const mockData = generateMockAnalysis(ticker);
+        displayStockAnalysis(mockData);
         resultsEl.style.display = 'block';
       } catch (error) {
-        showError(errorEl, 'Error fetching prediction data');
+        showError(errorEl, 'Error analyzing stock');
       } finally {
         setButtonLoading(btn, false);
       }
     }
 
-    function displayPredictionResults(data) {
-      const { ticker, currentPrice, predictions, model, confidence } = data;
+    function generateMockAnalysis(ticker) {
+      const basePrice = Math.random() * 200 + 50;
+      const peRatio = Math.random() * 25 + 5;
+      const marketCap = Math.random() * 500 + 10;
+      const dividend = Math.random() * 0.05;
+
+      return {
+        ticker,
+        price: basePrice,
+        peRatio: peRatio,
+        marketCap: marketCap,
+        dividendYield: dividend,
+        volatility: Math.random() * 0.4 + 0.1,
+        risk: peRatio > 20 ? 'High' : peRatio > 15 ? 'Medium' : 'Low'
+      };
+    }
+
+    function displayStockAnalysis(data) {
+      const metricsEl = document.getElementById('stock-metrics');
+      const explanationEl = document.getElementById('analysis-explanation');
+
+      metricsEl.innerHTML = `
+        <div class="metric-card">
+          <div class="metric-value">${data.price.toFixed(2)}</div>
+          <div class="metric-label">Current Price</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">${data.peRatio.toFixed(1)}</div>
+          <div class="metric-label">P/E Ratio</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">${data.marketCap.toFixed(1)}B</div>
+          <div class="metric-label">Market Cap</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">${(data.dividendYield * 100).toFixed(2)}%</div>
+          <div class="metric-label">Dividend Yield</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">${data.risk}</div>
+          <div class="metric-label">Risk Level</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">${(data.volatility * 100).toFixed(1)}%</div>
+          <div class="metric-label">Volatility</div>
+        </div>
+      `;
+
+      // Generate simulated price history
+      const dates = [];
+      const prices = [];
+      const currentDate = new Date();
       
-      // Update chart
-      updateChart('predictionChart', {
-        labels: predictions.map(p => p.label),
+      for (let i = 30; i >= 0; i--) {
+        const date = new Date(currentDate);
+        date.setDate(date.getDate() - i);
+        dates.push(date.toLocaleDateString());
+        
+        const randomChange = (Math.random() - 0.5) * data.volatility * 20;
+        const price = data.price + randomChange * (1 - i/30);
+        prices.push(Math.max(price, 10));
+      }
+
+      updateChart('analysisChart', {
+        labels: dates,
         datasets: [{
-          label: `${ticker} Price Prediction`,
-          data: predictions.map(p => p.price),
-          borderColor: '#667eea',
-          backgroundColor: 'rgba(102, 126, 234, 0.1)',
+          label: `${data.ticker} Price Movement`,
+          data: prices,
+          borderColor: data.risk === 'High' ? '#f44336' : data.risk === 'Medium' ? '#ff9800' : '#4caf50',
+          backgroundColor: data.risk === 'High' ? 'rgba(244, 67, 54, 0.1)' : data.risk === 'Medium' ? 'rgba(255, 152, 0, 0.1)' : 'rgba(76, 175, 80, 0.1)',
           borderWidth: 3,
           fill: true,
           tension: 0.4
         }]
       });
 
-      // Update table
-      const tableContent = document.getElementById('predictions-table-content');
-      let tableHTML = `
-        <thead>
-          <tr>
-            <th>Time Period</th>
-            <th>Predicted Price</th>
-            <th>Change</th>
-            <th>% Change</th>
-          </tr>
-        </thead>
-        <tbody>
-      `;
-
-      predictions.forEach((pred, index) => {
-        if (index === 0) return;
-        
-        const change = pred.price - currentPrice;
-        const percentChange = (change / currentPrice) * 100;
-        const changeClass = change >= 0 ? 'price-up' : 'price-down';
-        const changeSymbol = change >= 0 ? '+' : '';
-
-        tableHTML += `
-          <tr>
-            <td><strong>${pred.label}</strong></td>
-            <td><strong>$${pred.price.toFixed(2)}</strong></td>
-            <td><span class="price-change ${changeClass}">${changeSymbol}$${change.toFixed(2)}</span></td>
-            <td><span class="price-change ${changeClass}">${changeSymbol}${percentChange.toFixed(2)}%</span></td>
-          </tr>
-        `;
-      });
-
-      tableHTML += '</tbody>';
-      tableContent.innerHTML = tableHTML;
-
-      // Update model info
-      const modelInfo = document.getElementById('model-info');
-      const modelDescriptions = {
-        'xgboost': 'XGBoost uses gradient boosting with decision trees. Best for complex patterns and feature interactions.',
-        'linear': 'Linear regression models price based on historical trends. Fast but may miss complex patterns.',
-        'lstm': 'LSTM neural networks excel at sequence prediction and long-term dependencies in time series data.'
-      };
-      
-      modelInfo.innerHTML = `
-        <strong>Model:</strong> ${model.toUpperCase()} | 
-        <strong>Confidence:</strong> ${(confidence * 100).toFixed(1)}% | 
-        <strong>Description:</strong> ${modelDescriptions[model]}
+      explanationEl.innerHTML = `
+        <h3><span class="icon">📚</span> What These Numbers Mean</h3>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h4>P/E Ratio: ${data.peRatio.toFixed(1)}</h4>
+            <p><strong>${data.peRatio > 20 ? 'High' : data.peRatio > 15 ? 'Moderate' : 'Low'} P/E</strong><br>
+            This means investors are paying ${data.peRatio.toFixed(1)} for every $1 of annual earnings. 
+            ${data.peRatio > 25 ? 'Very high - could indicate overvaluation or high growth expectations.' : 
+              data.peRatio > 15 ? 'Moderate - fairly typical for many companies.' : 
+              'Low - could indicate undervaluation or slow growth.'}</p>
+          </div>
+          <div class="concept-card">
+            <h4>Risk Level: ${data.risk}</h4>
+            <p><strong>Investment Risk Assessment</strong><br>
+            ${data.risk === 'High' ? 'High volatility expected. Suitable for risk-tolerant investors with long time horizons.' :
+              data.risk === 'Medium' ? 'Moderate volatility. Good balance of growth potential and stability.' :
+              'Lower volatility. More suitable for conservative investors.'}</p>
+          </div>
+          <div class="concept-card">
+            <h4>Dividend: ${(data.dividendYield * 100).toFixed(2)}%</h4>
+            <p><strong>Income Generation</strong><br>
+            ${data.dividendYield > 0.03 ? 'Good dividend yield. Provides regular income in addition to potential price appreciation.' :
+              data.dividendYield > 0.01 ? 'Modest dividend. Some income but focus is likely on growth.' :
+              'Little to no dividend. Company likely reinvests profits for growth.'}</p>
+          </div>
+          <div class="concept-card">
+            <h4>Key Takeaway</h4>
+            <p><strong>Educational Reminder</strong><br>
+            This analysis is simulated for learning purposes. Real investment decisions should be based on comprehensive research including financial statements, industry analysis, management quality, and current market conditions.</p>
+          </div>
+        </div>
       `;
     }
 
-    // Historical Analysis
-    async function loadHistoricalData() {
-      const ticker = document.getElementById('historical-ticker').value.toUpperCase().trim();
-      const period = document.getElementById('historical-period').value;
-      const errorEl = document.getElementById('historical-error');
-      const resultsEl = document.getElementById('historical-results');
+    // Investment Calculator
+    function calculateInvestment() {
+      const initial = parseFloat(document.getElementById('initial-investment').value) || 0;
+      const monthly = parseFloat(document.getElementById('monthly-contribution').value) || 0;
+      const annualReturn = parseFloat(document.getElementById('annual-return').value) || 0;
+      const years = parseInt(document.getElementById('investment-years').value) || 0;
 
-      if (!ticker) {
-        showError(errorEl, 'Please enter a ticker symbol');
+      if (years <= 0) {
+        alert('Please enter a valid number of years');
         return;
       }
 
-      if (!/^[A-Z]{1,5}$/.test(ticker)) {
-        showError(errorEl, 'Please enter a valid ticker symbol (1-5 letters)');
-        return;
-      }
-
-      hideError(errorEl);
-
-      try {
-        const data = await fetchHistoricalData(ticker, period);
+      const monthlyReturn = annualReturn / 100 / 12;
+      const months = years * 12;
+      
+      // Calculate compound growth
+      let totalValue = initial;
+      let totalContributed = initial;
+      const yearlyData = [];
+      
+      for (let month = 1; month <= months; month++) {
+        totalValue = totalValue * (1 + monthlyReturn) + monthly;
+        totalContributed += monthly;
         
-        if (!data.history || data.history.length === 0) {
-          throw new Error('No historical data available');
+        if (month % 12 === 0) {
+          yearlyData.push({
+            year: month / 12,
+            value: totalValue,
+            contributed: totalContributed
+          });
         }
-        
-        updateChart('historicalChart', {
-          labels: data.history.map(h => h.date),
-          datasets: [{
-            label: `${ticker} Historical Price`,
-            data: data.history.map(h => h.price),
-            borderColor: '#00c851',
-            backgroundColor: 'rgba(0, 200, 81, 0.1)',
-            borderWidth: 2,
+      }
+
+      const totalGain = totalValue - totalContributed;
+      const resultEl = document.getElementById('investment-result');
+      
+      resultEl.innerHTML = `
+        <h4>Investment Results After ${years} Years</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+          <div style="text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: bold; color: #4caf50;">${totalValue.toFixed(0)}</div>
+            <div style="color: #666;">Total Value</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: bold; color: #2196f3;">${totalContributed.toFixed(0)}</div>
+            <div style="color: #666;">Total Contributed</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: bold; color: #ff9800;">${totalGain.toFixed(0)}</div>
+            <div style="color: #666;">Total Gain</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: bold; color: #9c27b0;">${((totalGain / totalContributed) * 100).toFixed(1)}%</div>
+            <div style="color: #666;">Return on Investment</div>
+          </div>
+        </div>
+        <p style="margin-top: 1rem; color: #666; font-style: italic;">
+          <strong>Key Insight:</strong> Of your final ${totalValue.toFixed(0)}, you contributed ${totalContributed.toFixed(0)} 
+          and compound interest generated ${totalGain.toFixed(0)}!
+        </p>
+      `;
+      
+      resultEl.style.display = 'block';
+
+      // Create growth chart
+      updateGrowthChart(yearlyData);
+      document.getElementById('growth-chart-container').style.display = 'block';
+    }
+
+    function updateGrowthChart(data) {
+      updateChart('growthChart', {
+        labels: data.map(d => `Year ${d.year}`),
+        datasets: [
+          {
+            label: 'Total Value',
+            data: data.map(d => d.value),
+            borderColor: '#4caf50',
+            backgroundColor: 'rgba(76, 175, 80, 0.1)',
             fill: true,
-            tension: 0.1,
-            pointRadius: 0,
-            pointHoverRadius: 5
-          }]
-        }, {
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: "Date",
-                font: { size: 12, weight: '600' },
-                color: '#2c3e50'
-              },
-              grid: { color: 'rgba(0, 0, 0, 0.1)' },
-              ticks: { 
-                color: '#7f8c8d',
-                maxTicksLimit: 10
-              }
-            },
-            y: {
-              beginAtZero: false,
-              title: {
-                display: true,
-                text: "Price (USD)",
-                font: { size: 12, weight: '600' },
-                color: '#2c3e50'
-              },
-              grid: { color: 'rgba(0, 0, 0, 0.1)' },
-              ticks: {
-                callback: function(value) {
-                  return '$' + value.toFixed(2);
-                },
-                color: '#7f8c8d'
-              }
-            }
+            tension: 0.1
+          },
+          {
+            label: 'Amount Contributed',
+            data: data.map(d => d.contributed),
+            borderColor: '#2196f3',
+            backgroundColor: 'rgba(33, 150, 243, 0.1)',
+            fill: true,
+            tension: 0.1
           }
-        });
-
-        resultsEl.style.display = 'block';
-      } catch (error) {
-        console.error('Historical data error:', error);
-        showError(errorEl, 'Error fetching historical data: ' + error.message);
-      }
+        ]
+      });
     }
 
-    // Stock Comparison
-    async function addToComparison() {
-      const ticker = document.getElementById('comparison-ticker').value.toUpperCase().trim();
-      const errorEl = document.getElementById('comparison-error');
+    // Quiz Functions
+    function loadQuiz() {
+      currentQuizIndex = 0;
+      quizScore = 0;
+      selectedAnswers = [];
+      displayQuizQuestion();
+    }
 
-      if (!ticker) {
-        showError(errorEl, 'Please enter a ticker symbol');
+    function displayQuizQuestion() {
+      if (currentQuizIndex >= quizQuestions.length) {
+        showQuizResults();
         return;
       }
 
-      if (comparisonStocks.find(s => s.ticker === ticker)) {
-        showError(errorEl, 'Stock already in comparison');
-        return;
-      }
-
-      hideError(errorEl);
-
-      try {
-        const data = await fetchCurrentPrice(ticker);
-        comparisonStocks.push(data);
-        updateComparisonDisplay();
-        document.getElementById('comparison-ticker').value = '';
-      } catch (error) {
-        showError(errorEl, 'Error fetching stock data');
-      }
-    }
-
-    function updateComparisonDisplay() {
-      const container = document.getElementById('comparison-container');
+      const question = quizQuestions[currentQuizIndex];
+      const container = document.getElementById('quiz-container');
       
-      container.innerHTML = comparisonStocks.map((stock, index) => {
-        const changeClass = stock.change >= 0 ? 'price-up' : 'price-down';
-        const changeSymbol = stock.change >= 0 ? '+' : '';
-        
-        return `
-          <div class="stock-card">
-            <button class="remove-stock" onclick="removeFromComparison(${index})">×</button>
-            <h4>${stock.ticker}</h4>
-            <div class="stock-price">$${stock.price.toFixed(2)}</div>
-            <div class="price-change ${changeClass}">
-              ${changeSymbol}$${stock.change.toFixed(2)} (${changeSymbol}${stock.changePercent.toFixed(2)}%)
+      container.innerHTML = `
+        <div class="quiz-question">
+          Question ${currentQuizIndex + 1} of ${quizQuestions.length}: ${question.question}
+        </div>
+        <div class="quiz-options">
+          ${question.options.map((option, index) => `
+            <div class="quiz-option" onclick="selectAnswer(${index})">
+              ${option}
             </div>
-          </div>
-        `;
-      }).join('');
-
-      if (comparisonStocks.length > 1) {
-        updateComparisonChart();
-        document.getElementById('comparison-chart-container').style.display = 'block';
-      }
-    }
-
-    function updateComparisonChart() {
-      const datasets = comparisonStocks.map((stock, index) => {
-        const colors = ['#667eea', '#00c851', '#e74c3c', '#f39c12', '#9b59b6'];
-        return {
-          label: stock.ticker,
-          data: [{ x: 0, y: stock.price }],
-          borderColor: colors[index % colors.length],
-          backgroundColor: colors[index % colors.length] + '20',
-          borderWidth: 3
-        };
-      });
-
-      updateChart('comparisonChart', { datasets }, {
-        scales: {
-          x: { display: false },
-          y: { beginAtZero: false }
-        }
-      });
-    }
-
-    function removeFromComparison(index) {
-      comparisonStocks.splice(index, 1);
-      updateComparisonDisplay();
-    }
-
-    function clearComparison() {
-      comparisonStocks = [];
-      updateComparisonDisplay();
-      document.getElementById('comparison-chart-container').style.display = 'none';
-    }
-
-    // Portfolio Tracker
-    async function addToPortfolio() {
-      const ticker = document.getElementById('portfolio-ticker').value.toUpperCase().trim();
-      const shares = parseFloat(document.getElementById('portfolio-shares').value);
-      const purchasePrice = parseFloat(document.getElementById('portfolio-price').value);
-      const errorEl = document.getElementById('portfolio-error');
-
-      if (!ticker || isNaN(shares) || isNaN(purchasePrice)) {
-        showError(errorEl, 'Please fill in all fields with valid numbers');
-        return;
-      }
-
-      hideError(errorEl);
-
-      try {
-        const currentData = await fetchCurrentPrice(ticker);
-        
-        portfolioHoldings.push({
-          ...currentData,
-          shares,
-          purchasePrice,
-          purchaseValue: shares * purchasePrice,
-          currentValue: shares * currentData.price,
-          totalGainLoss: (currentData.price - purchasePrice) * shares
-        });
-
-        updatePortfolioDisplay();
-        
-        // Clear form
-        document.getElementById('portfolio-ticker').value = '';
-        document.getElementById('portfolio-shares').value = '';
-        document.getElementById('portfolio-price').value = '';
-      } catch (error) {
-        showError(errorEl, 'Error fetching stock data');
-      }
-    }
-
-    function updatePortfolioDisplay() {
-      const summaryEl = document.getElementById('portfolio-summary');
-      const holdingsEl = document.getElementById('portfolio-holdings');
-      const statsEl = document.getElementById('portfolio-stats');
-
-      if (portfolioHoldings.length === 0) {
-        summaryEl.style.display = 'none';
-        holdingsEl.innerHTML = '';
-        return;
-      }
-
-      // Calculate portfolio statistics
-      const totalValue = portfolioHoldings.reduce((sum, holding) => sum + holding.currentValue, 0);
-      const totalCost = portfolioHoldings.reduce((sum, holding) => sum + holding.purchaseValue, 0);
-      const totalGainLoss = totalValue - totalCost;
-      const totalGainLossPercent = (totalGainLoss / totalCost) * 100;
-
-      // Update summary
-      summaryEl.style.display = 'block';
-      statsEl.innerHTML = `
-        <div class="stat-item">
-          <div class="stat-value">${totalValue.toFixed(2)}</div>
-          <div class="stat-label">Current Value</div>
+          `).join('')}
         </div>
-        <div class="stat-item">
-          <div class="stat-value">${totalCost.toFixed(2)}</div>
-          <div class="stat-label">Total Cost</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value ${totalGainLoss >= 0 ? 'price-up' : 'price-down'}">
-            ${totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toFixed(2)}
-          </div>
-          <div class="stat-label">Total P&L</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value ${totalGainLossPercent >= 0 ? 'price-up' : 'price-down'}">
-            ${totalGainLossPercent >= 0 ? '+' : ''}${totalGainLossPercent.toFixed(2)}%
-          </div>
-          <div class="stat-label">Total Return</div>
-        </div>
+        <button onclick="submitAnswer()" style="margin-top: 1rem;" disabled id="submit-btn">Submit Answer</button>
       `;
+    }
 
-      // Update holdings
-      holdingsEl.innerHTML = portfolioHoldings.map((holding, index) => {
-        const gainLossPercent = ((holding.price - holding.purchasePrice) / holding.purchasePrice) * 100;
-        const changeClass = holding.totalGainLoss >= 0 ? 'price-up' : 'price-down';
-        const changeSymbol = holding.totalGainLoss >= 0 ? '+' : '';
+    function selectAnswer(index) {
+      document.querySelectorAll('.quiz-option').forEach((option, i) => {
+        option.classList.remove('selected');
+        if (i === index) option.classList.add('selected');
+      });
+      
+      selectedAnswers[currentQuizIndex] = index;
+      document.getElementById('submit-btn').disabled = false;
+    }
+
+    function submitAnswer() {
+      const question = quizQuestions[currentQuizIndex];
+      const selected = selectedAnswers[currentQuizIndex];
+      
+      if (selected === question.correct) {
+        quizScore++;
+        document.querySelectorAll('.quiz-option')[selected].classList.add('correct');
+      } else {
+        document.querySelectorAll('.quiz-option')[selected].classList.add('incorrect');
+        document.querySelectorAll('.quiz-option')[question.correct].classList.add('correct');
+      }
+      
+      setTimeout(() => {
+        currentQuizIndex++;
+        displayQuizQuestion();
+      }, 2000);
+    }
+
+    function showQuizResults() {
+      document.getElementById('quiz-container').style.display = 'none';
+      const resultsEl = document.getElementById('quiz-results');
+      const percentage = (quizScore / quizQuestions.length * 100).toFixed(0);
+      
+      let message = '';
+      if (percentage >= 80) {
+        message = 'Excellent! You have a strong understanding of investment basics.';
+      } else if (percentage >= 60) {
+        message = 'Good job! You understand most concepts but could review a few areas.';
+      } else {
+        message = 'Keep learning! Review the basics and try again.';
+      }
+      
+      document.getElementById('quiz-score').textContent = 
+        `You scored ${quizScore} out of ${quizQuestions.length} (${percentage}%). ${message}`;
+      
+      resultsEl.style.display = 'block';
+    }
+
+    function restartQuiz() {
+      document.getElementById('quiz-results').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      loadQuiz();
+    }
+
+    // Market Scenarios
+    function loadScenario(scenarioType) {
+      document.querySelectorAll('.scenario-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      const scenario = marketScenarios[scenarioType];
+      const contentEl = document.getElementById('scenario-content');
+      
+      contentEl.innerHTML = `
+        <h4>${scenario.title}</h4>
+        <p><strong>Definition:</strong> ${scenario.description}</p>
         
-        return `
-          <div class="stock-card">
-            <button class="remove-stock" onclick="removeFromPortfolio(${index})">×</button>
-            <h4>${holding.ticker}</h4>
-            <div class="stock-price">${holding.price.toFixed(2)}</div>
-            <div style="margin: 0.5rem 0; font-size: 0.9rem; color: #6c757d;">
-              ${holding.shares} shares @ ${holding.purchasePrice.toFixed(2)}
-            </div>
-            <div class="price-change ${changeClass}">
-              ${changeSymbol}${holding.totalGainLoss.toFixed(2)} (${changeSymbol}${gainLossPercent.toFixed(2)}%)
-            </div>
-            <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #6c757d;">
-              Value: ${holding.currentValue.toFixed(2)}
-            </div>
-          </div>
-        `;
-      }).join('');
+        <h5>Key Characteristics:</h5>
+        <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+          ${scenario.characteristics.map(char => `<li>${char}</li>`).join('')}
+        </ul>
+        
+        <h5>Investment Strategy:</h5>
+        <p style="background: rgba(102, 126, 234, 0.1); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+          ${scenario.strategy}
+        </p>
+        
+        <h5>Historical Example:</h5>
+        <p style="font-style: italic; color: #666;">
+          ${scenario.historicalExample}
+        </p>
+      `;
+      
+      // Generate scenario chart
+      generateScenarioChart(scenarioType);
     }
 
-    function removeFromPortfolio(index) {
-      portfolioHoldings.splice(index, 1);
-      updatePortfolioDisplay();
+    function generateScenarioChart(scenarioType) {
+      const months = Array.from({length: 24}, (_, i) => `Month ${i + 1}`);
+      let prices = [];
+      let basePrice = 100;
+      
+      switch(scenarioType) {
+        case 'bull':
+          prices = months.map((_, i) => basePrice * (1 + 0.008 * i + (Math.random() - 0.5) * 0.05));
+          break;
+        case 'bear':
+          prices = months.map((_, i) => basePrice * (1 - 0.01 * i + (Math.random() - 0.5) * 0.05));
+          break;
+        case 'crash':
+          prices = months.map((_, i) => {
+            if (i < 8) return basePrice + (Math.random() - 0.5) * 5;
+            if (i < 12) return basePrice * (0.7 - (i-8) * 0.05) + (Math.random() - 0.5) * 5;
+            return basePrice * 0.6 + (Math.random() - 0.5) * 3;
+          });
+          break;
+        case 'recovery':
+          prices = months.map((_, i) => {
+            if (i < 6) return 70 + (Math.random() - 0.5) * 3;
+            return 70 + (i - 6) * 2.5 + (Math.random() - 0.5) * 5;
+          });
+          break;
+        case 'sideways':
+          prices = months.map(() => basePrice + (Math.random() - 0.5) * 20);
+          break;
+      }
+      
+      updateChart('scenarioChart', {
+        labels: months,
+        datasets: [{
+          label: 'Market Index',
+          data: prices,
+          borderColor: '#667eea',
+          backgroundColor: 'rgba(102, 126, 234, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.1
+        }]
+      });
     }
 
-    // Utility functions
+    // Glossary Functions
+    function displayGlossary() {
+      const container = document.getElementById('glossary-terms');
+      container.innerHTML = glossaryTerms.map(term => `
+        <div class="glossary-term">
+          <div class="term-name">${term.term}</div>
+          <div class="term-definition">${term.definition}</div>
+        </div>
+      `).join('');
+    }
+
+    function searchGlossary() {
+      const searchTerm = document.getElementById('glossary-search').value.toLowerCase();
+      const container = document.getElementById('glossary-terms');
+      
+      const filteredTerms = glossaryTerms.filter(term => 
+        term.term.toLowerCase().includes(searchTerm) || 
+        term.definition.toLowerCase().includes(searchTerm)
+      );
+      
+      container.innerHTML = filteredTerms.map(term => `
+        <div class="glossary-term">
+          <div class="term-name">${term.term}</div>
+          <div class="term-definition">${term.definition}</div>
+        </div>
+      `).join('');
+    }
+
+    // Utility Functions
     function updateChart(chartId, data, options = {}) {
       if (charts[chartId]) {
         charts[chartId].destroy();
@@ -985,14 +1475,14 @@
             beginAtZero: false,
             title: {
               display: true,
-              text: "Price (USD)",
+              text: "Value ($)",
               font: { size: 12, weight: '600' },
               color: '#2c3e50'
             },
             grid: { color: 'rgba(0, 0, 0, 0.1)' },
             ticks: {
               callback: function(value) {
-                return '$' + value.toFixed(2);
+                return '' + value.toFixed(0);
               },
               color: '#7f8c8d'
             }
@@ -1000,7 +1490,7 @@
           x: {
             title: {
               display: true,
-              text: "Time Period",
+              text: "Time",
               font: { size: 12, weight: '600' },
               color: '#2c3e50'
             },
@@ -1027,7 +1517,7 @@
         btnText.innerHTML = '<div class="loading"></div>';
       } else {
         button.disabled = false;
-        btnText.textContent = 'Predict Price';
+        btnText.textContent = 'Analyze Stock';
       }
     }
 
@@ -1041,170 +1531,20 @@
       errorEl.classList.remove('show');
     }
 
-    // Auto-complete for popular stocks
-    const popularStocks = ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'AMZN', 'META', 'NVDA', 'NFLX', 'AMD', 'INTC'];
-    
-    function setupAutoComplete() {
-      const tickerInputs = document.querySelectorAll('input[type="text"]');
-      
-      tickerInputs.forEach(input => {
-        input.addEventListener('input', function() {
-          const value = this.value.toUpperCase();
-          if (value.length >= 1) {
-            const matches = popularStocks.filter(stock => stock.startsWith(value));
-            // Placeholder for autocomplete dropdown implementation
-          }
-        });
-      });
-    }
-
-    // Real-time price updates simulation
-    function startPriceUpdates() {
-      setInterval(() => {
-        // Update comparison stocks
-        comparisonStocks.forEach(stock => {
-          const change = (Math.random() - 0.5) * 2;
-          stock.price += change;
-          stock.change += change;
-          stock.changePercent = (stock.change / (stock.price - stock.change)) * 100;
-        });
-        
-        // Update portfolio holdings
-        portfolioHoldings.forEach(holding => {
-          const change = (Math.random() - 0.5) * 2;
-          holding.price += change;
-          holding.currentValue = holding.shares * holding.price;
-          holding.totalGainLoss = (holding.price - holding.purchasePrice) * holding.shares;
-        });
-
-        // Refresh displays
-        if (comparisonStocks.length > 0) updateComparisonDisplay();
-        if (portfolioHoldings.length > 0) updatePortfolioDisplay();
-      }, 10000); // Update every 10 seconds
-    }
-
-    // Enhanced keyboard shortcuts
-    document.addEventListener('keydown', function(event) {
-      // Ctrl/Cmd + 1-4 for quick tab switching
-      if ((event.ctrlKey || event.metaKey) && event.key >= '1' && event.key <= '4') {
-        event.preventDefault();
-        const tabs = ['predictions', 'historical', 'comparison', 'portfolio'];
-        const tabIndex = parseInt(event.key) - 1;
-        if (tabs[tabIndex]) {
-          const tabButton = document.querySelector(`.tab-button:nth-child(${tabIndex + 1})`);
-          tabButton.click();
-        }
-      }
-      
-      // Enter key for quick actions in each tab
-      if (event.key === 'Enter') {
-        const activeTab = document.querySelector('.tab-content.active');
-        if (activeTab) {
-          const activeInput = activeTab.querySelector('input:focus');
-          if (activeInput) {
-            const button = activeInput.parentElement.querySelector('button');
-            if (button && !button.disabled) {
-              button.click();
-            }
-          }
-        }
-      }
-    });
-
-    // Market status indicator
-    function updateMarketStatus() {
-      const now = new Date();
-      const day = now.getDay();
-      const hour = now.getHours();
-      
-      let status = 'Market Closed';
-      let statusColor = '#e74c3c';
-      
-      // Simple market hours check (9:30 AM - 4:00 PM ET, Mon-Fri)
-      if (day >= 1 && day <= 5 && hour >= 9 && hour < 16) {
-        status = 'Market Open';
-        statusColor = '#00c851';
-      } else if (day >= 1 && day <= 5 && ((hour >= 4 && hour < 9) || hour >= 16)) {
-        status = 'Pre/After Market';
-        statusColor = '#f39c12';
-      }
-      
-      // Add status indicator to header
-      const header = document.querySelector('.header p');
-      if (!document.getElementById('market-status')) {
-        const statusEl = document.createElement('div');
-        statusEl.id = 'market-status';
-        statusEl.style.cssText = `
-          margin-top: 10px;
-          padding: 5px 15px;
-          border-radius: 20px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          display: inline-block;
-          background: rgba(255, 255, 255, 0.2);
-        `;
-        header.parentNode.appendChild(statusEl);
-      }
-      
-      const statusEl = document.getElementById('market-status');
-      statusEl.textContent = '🔴 ' + status;
-      statusEl.style.color = statusColor;
-    }
-
-    // Data export functionality
-    function exportPortfolioData() {
-      if (portfolioHoldings.length === 0) {
-        alert('No portfolio data to export');
-        return;
-      }
-      
-      const csvContent = "data:text/csv;charset=utf-8," + 
-        "Ticker,Shares,Purchase Price,Current Price,Total Gain/Loss,Percentage Change\n" +
-        portfolioHoldings.map(holding => {
-          const percentChange = ((holding.price - holding.purchasePrice) / holding.purchasePrice) * 100;
-          return `${holding.ticker},${holding.shares},${holding.purchasePrice},${holding.price},${holding.totalGainLoss.toFixed(2)},${percentChange.toFixed(2)}%`;
-        }).join("\n");
-      
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `portfolio_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    // Add export button to portfolio tab
-    document.addEventListener('DOMContentLoaded', function() {
-      const portfolioInputSection = document.querySelector('#portfolio-tab .input-section .input-group');
-      if (portfolioInputSection) {
-        const exportBtn = document.createElement('button');
-        exportBtn.textContent = 'Export CSV';
-        exportBtn.onclick = exportPortfolioData;
-        exportBtn.style.background = '#17a2b8';
-        portfolioInputSection.appendChild(exportBtn);
-      }
-    });
-
     // Initialize everything
     window.addEventListener('load', function() {
-      setupAutoComplete();
-      updateMarketStatus();
-      startPriceUpdates();
+      displayGlossary();
+      loadQuiz();
+      loadScenario('bull');
       
-      // Focus on first input
-      document.getElementById('ticker').focus();
-      
-      // Update market status every minute
-      setInterval(updateMarketStatus, 60000);
-    });
-
-    // Service worker for offline functionality (basic)
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(function(error) {
-        console.log('Service Worker registration failed:', error);
+      // Set up input event listeners for calculator
+      ['initial-investment', 'monthly-contribution', 'annual-return', 'investment-years'].forEach(id => {
+        document.getElementById(id).addEventListener('input', calculateInvestment);
       });
-    }
+      
+      // Initial calculation
+      calculateInvestment();
+    });
   </script>
 </body>
 </html>
